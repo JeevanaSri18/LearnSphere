@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnSphere - ML Learning Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --card: #1a2235;
+            --border: #2a3a5c;
+            --accent: #3b82f6;
+            --accent2: #06b6d4;
+            --accent3: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text: #e2e8f0;
+            --muted: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.06) 0%, transparent 60%);
+        }
+
+        /* HEADER */
+        header {
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(10,14,26,0.9);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--accent3));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-badge {
+            margin-left: auto;
+            font-size: 12px;
+            color: var(--muted);
+            background: rgba(59,130,246,0.08);
+            border: 1px solid rgba(59,130,246,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        main { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            margin-bottom: 48px;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .hero h2 {
+            font-size: 40px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .hero h2 em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p { color: var(--muted); font-size: 15px; margin-bottom: 28px; }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            max-width: 580px;
+            margin: 0 auto 20px;
+        }
+
+        .search-form input {
+            flex: 1;
+            padding: 13px 18px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-form input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+        }
+
+        .search-form input::placeholder { color: var(--muted); }
+
+        .btn-search {
+            padding: 13px 24px;
+            background: linear-gradient(135deg, var(--accent), var(--accent3));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .btn-search:hover { opacity: 0.88; transform: translateY(-1px); }
+
+        /* CHIPS */
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .chip {
+            padding: 6px 14px;
+            background: rgba(59,130,246,0.07);
+            border: 1px solid rgba(59,130,246,0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--accent2);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .chip:hover {
+            background: rgba(59,130,246,0.18);
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        /* STATS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 44px;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 18px;
+            text-align: center;
+            transition: border-color 0.2s, transform 0.2s;
+            cursor: default;
+        }
+
+        .stat:hover {
+            border-color: rgba(59,130,246,0.4);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon { font-size: 28px; margin-bottom: 10px; }
+        .stat-n { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+        .stat-l { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+        .stats-bottom {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 44px;
+            animation: fadeUp 0.65s ease;
+        }
+
+        /* EMPTY */
+        .empty {
+            text-align: center;
+            padding: 60px 0;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .empty-icon { font-size: 56px; margin-bottom: 16px; }
+        .empty h3 { font-size: 18px; margin-bottom: 6px; }
+        .empty p { color: var(--muted); font-size: 14px; }
+
+        /* RESULT */
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--border);
+            animation: fadeUp 0.4s ease;
+        }
+
+        .result-header h2 { font-size: 26px; font-weight: 700; }
+
+        .badge-found {
+            padding: 3px 10px;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--success);
+        }
+
+        .badge-ai {
+            padding: 3px 10px;
+            background: rgba(139,92,246,0.1);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 20px;
+            font-size: 11px;
+            color: #a78bfa;
+        }
+
+        .back-link {
+            margin-left: auto;
+            color: var(--muted);
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover { color: var(--text); }
+
+        .section { margin-bottom: 24px; animation: fadeUp 0.5s ease; }
+
+        .sec-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .explanation-text { font-size: 15px; line-height: 1.7; color: #cbd5e1; }
+
+        .types-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .type-pill {
+            padding: 6px 14px;
+            background: rgba(139,92,246,0.08);
+            border: 1px solid rgba(139,92,246,0.22);
+            border-radius: 8px;
+            font-size: 13px;
+            color: #a78bfa;
+            font-weight: 500;
+        }
+
+        /* CODE */
+        .code-wrap {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .code-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dots { display: flex; gap: 5px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dr { background: #ff5f57; }
+        .dy { background: #febc2e; }
+        .dg { background: #28c840; }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover { color: var(--text); border-color: var(--accent); }
+
+        pre {
+            padding: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.65;
+            color: #e2e8f0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        /* ── TOPIC IMAGE GALLERY ── */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .img-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            cursor: default;
+        }
+
+        .img-card:hover {
+            border-color: rgba(59,130,246,0.45);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(59,130,246,0.12);
+        }
+
+        .img-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+            background: var(--border);
+            transition: opacity 0.3s;
+        }
+
+        .img-card img.loading { opacity: 0; }
+        .img-card img.loaded  { opacity: 1; }
+
+        .img-card-label {
+            padding: 10px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-top: 1px solid var(--border);
+        }
+
+        /* skeleton shimmer while image loads */
+        .img-skeleton {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(90deg, var(--card) 25%, #1f2f47 50%, var(--card) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            display: none;
+        }
+
+        @keyframes shimmer {
+            0%   { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .image-gallery { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* AI CHAT */
+        .ai-box {
+            background: var(--card);
+            border: 1px solid rgba(59,130,246,0.22);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .ai-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent2);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ai-row { display: flex; gap: 8px; }
+
+        .ai-input {
+            flex: 1;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .ai-input:focus { border-color: var(--accent); }
+        .ai-input::placeholder { color: var(--muted); }
+
+        .ai-ask-btn {
+            padding: 10px 16px;
+            background: rgba(59,130,246,0.12);
+            border: 1px solid rgba(59,130,246,0.28);
+            border-radius: 8px;
+            color: var(--accent);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .ai-ask-btn:hover { background: rgba(59,130,246,0.22); }
+
+        .ai-resp {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: rgba(6,182,212,0.05);
+            border: 1px solid rgba(6,182,212,0.15);
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .ai-resp.show { display: block; animation: fadeUp 0.3s ease; }
+        .typing { color: var(--muted); font-style: italic; }
+
+        /* QUIZ */
+        .quiz-list { display: flex; flex-direction: column; gap: 16px; }
+
+        .qcard {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .qcard.correct { border-color: var(--success); background: rgba(16,185,129,0.04); }
+        .qcard.wrong   { border-color: var(--danger);  background: rgba(239,68,68,0.04); }
+
+        .q-text {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .q-num {
+            min-width: 24px; height: 24px;
+            background: linear-gradient(135deg, var(--accent), var(--accent3));
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px;
+            color: white;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        .opts { display: flex; flex-direction: column; gap: 7px; }
+
+        .opt {
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            text-align: left;
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            width: 100%;
+            transition: all 0.18s;
+        }
+
+        .opt:hover:not([disabled]) {
+            background: rgba(59,130,246,0.08);
+            border-color: rgba(59,130,246,0.4);
+        }
+
+        .opt.right      { background: rgba(16,185,129,0.1);  border-color: var(--success); color: #6ee7b7; }
+        .opt.wrong-pick { background: rgba(239,68,68,0.1);   border-color: var(--danger);  color: #fca5a5; }
+        .opt.reveal     { background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.35); color: #6ee7b7; }
+
+        .q-fb { display: none; margin-top: 10px; padding: 8px 12px; border-radius: 7px; font-size: 12px; }
+        .q-fb.show { display: block; }
+        .q-fb.c { background: rgba(16,185,129,0.08); color: #6ee7b7; }
+        .q-fb.w { background: rgba(239,68,68,0.08);  color: #fca5a5; }
+
+        /* SCORE */
+        .score-box {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .score-box.show { display: block; animation: fadeUp 0.5s ease; }
+        .score-big  { font-size: 50px; font-weight: 700; }
+        .score-msg  { color: var(--muted); font-size: 14px; margin-top: 6px; }
+
+        .prog-bar { height: 8px; background: var(--border); border-radius: 4px; margin-top: 16px; overflow: hidden; }
+        .prog-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--success)); width: 0%; transition: width 1s ease; }
+
+        .retry-btn {
+            margin-top: 16px;
+            padding: 10px 22px;
+            background: rgba(59,130,246,0.12);
+            border: 1px solid rgba(59,130,246,0.28);
+            border-radius: 8px;
+            color: var(--accent);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .retry-btn:hover { background: rgba(59,130,246,0.22); }
+
+        @media (max-width: 600px) {
+            main { padding: 24px 14px; }
+            .hero h2 { font-size: 26px; }
+            .search-form { flex-direction: column; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            header { padding: 16px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🧠</div>
+    <h1>LearnSphere</h1>
+    <div class="header-badge">✨ AI-Powered ML Learning</div>
+</header>
+
+<main>
+
+{% if not result %}
+
+<!-- HOME PAGE -->
+<div class="hero">
+    <h2>Master <em>Machine Learning</em><br>One Topic at a Time</h2>
+    <p>Explanations · Code Examples · Interactive Quizzes · AI Tutor</p>
+
+    <form class="search-form" method="POST" id="searchForm">
+        <input type="text" name="topic" id="topicInput"
+               placeholder="Try: regression, neural networks, clustering..."
+               autocomplete="off" required>
+        <button type="submit" class="btn-search">🔍 Explore</button>
+    </form>
+</div>
+
+<div class="stats">
+    <div class="stat">
+        <div class="stat-icon">📌</div>
+        <div class="stat-n">Explanation</div>
+        <div class="stat-l">Clear beginner-friendly topic overview</div>
+    </div>
+    <div class="stat">
+        <div class="stat-icon">🗂️</div>
+        <div class="stat-n">Types & Concepts</div>
+        <div class="stat-l">Key subtypes and related concepts</div>
+    </div>
+    <div class="stat">
+        <div class="stat-icon">💻</div>
+        <div class="stat-n">Sample Code</div>
+        <div class="stat-l">Ready-to-run Python code examples</div>
+    </div>
+</div>
+<div class="stats-bottom">
+    <div class="stat">
+        <div class="stat-icon">🤖</div>
+        <div class="stat-n">AI Tutor</div>
+        <div class="stat-l">Ask anything about the topic instantly</div>
+    </div>
+    <div class="stat">
+        <div class="stat-icon">📝</div>
+        <div class="stat-n">Quiz</div>
+        <div class="stat-l">Test your knowledge interactively</div>
+    </div>
+</div>
+
+<div class="empty">
+    <div class="empty-icon">🚀</div>
+    <h3>Start your ML journey</h3>
+    <p>Search a topic above or click a chip to begin</p>
+</div>
+
+{% else %}
+
+<!-- RESULT PAGE -->
+<div class="result-header">
+    <h2>{{ topic_name }}</h2>
+    <div class="badge-found">✓ Found</div>
+    {% if ai_generated %}
+    <div class="badge-ai">🤖 AI Generated</div>
+    {% endif %}
+    <a href="/" class="back-link">← Back</a>
+</div>
+
+<!-- EXPLANATION -->
+<div class="section">
+    <div class="sec-title">📌 Explanation</div>
+    <div class="card">
+        <p class="explanation-text">{{ result.explanation }}</p>
+    </div>
+</div>
+
+<!-- TYPES -->
+{% if result.types %}
+<div class="section">
+    <div class="sec-title">🗂 Types and Concepts</div>
+    <div class="card">
+        <div class="types-grid">
+            {% for t in result.types %}
+            <div class="type-pill">{{ t }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- CODE -->
+{% if result.code %}
+<div class="section">
+    <div class="sec-title">💻 Sample Code</div>
+    <div class="code-wrap">
+        <div class="code-top">
+            <div class="dots">
+                <div class="dot dr"></div>
+                <div class="dot dy"></div>
+                <div class="dot dg"></div>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre id="codeBlock">{{ result.code }}</pre>
+    </div>
+</div>
+{% endif %}
+
+<!-- VISUAL IMAGES -->
+{% if topic_images %}
+<div class="section">
+    <div class="sec-title">🖼️ Visual Overview</div>
+    <div class="image-gallery">
+        {% for img_url in topic_images %}
+        <div class="img-card">
+            <div class="img-skeleton" id="skel{{ loop.index }}"></div>
+            <img
+                src="{{ img_url }}"
+                alt="{{ topic_name }} visual {{ loop.index }}"
+                class="loading"
+                id="img{{ loop.index }}"
+                onload="imgLoaded({{ loop.index }})"
+                onerror="imgError({{ loop.index }})"
+            >
+            <div class="img-card-label">{{ topic_name }} · Visual {{ loop.index }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- AI TUTOR -->
+<div class="section">
+    <div class="sec-title">🤖 Ask AI Tutor</div>
+    <div class="ai-box">
+        <div class="ai-label">⚡ Ask anything about {{ topic_name }}</div>
+        <div class="ai-row">
+            <input type="text" class="ai-input" id="aiQ"
+                   placeholder="e.g. Give me a real-world example..."
+                   onkeydown="if(event.key==='Enter') askAI()">
+            <button class="ai-ask-btn" onclick="askAI()">Ask ✦</button>
+        </div>
+        <div class="ai-resp" id="aiResp"></div>
+    </div>
+</div>
+
+<!-- QUIZ -->
+{% if result.quiz %}
+<div class="section">
+    <div class="sec-title">📝 Quiz Yourself</div>
+    <div class="quiz-list" id="quizList">
+        {% for q in result.quiz %}
+        {% set qi = loop.index0 %}
+        <div class="qcard" id="qc{{ qi }}" data-answer="{{ q.answer | e }}">
+            <div class="q-text">
+                <div class="q-num">{{ loop.index }}</div>
+                <span>{{ q.question }}</span>
+            </div>
+            <div class="opts">
+                {% for opt in q.options %}
+                <button class="opt" data-val="{{ opt | e }}" data-qi="{{ qi }}" onclick="pick(this)">{{ opt }}</button>
+                {% endfor %}
+            </div>
+            <div class="q-fb" id="fb{{ qi }}"></div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="score-box" id="scoreBox">
+        <div class="score-big" id="scoreBig"></div>
+        <div class="score-msg" id="scoreMsg"></div>
+        <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+        <button class="retry-btn" onclick="retryQuiz()">🔄 Retry Quiz</button>
+    </div>
+</div>
+{% endif %}
+
+{% endif %}
+
+</main>
+
+<script>
+// ── HOME ──
+function pickTopic(t) {
+    document.getElementById('topicInput').value = t;
+    document.getElementById('searchForm').submit();
+}
+
+// ── CODE COPY ──
+function copyCode(btn) {
+    const code = document.getElementById('codeBlock').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+}
+
+// ── IMAGE LOADING ──
+function imgLoaded(i) {
+    const img  = document.getElementById('img' + i);
+    const skel = document.getElementById('skel' + i);
+    if (img)  img.classList.replace('loading', 'loaded');
+    if (skel) skel.style.display = 'none';
+}
+
+function imgError(i) {
+    const img  = document.getElementById('img' + i);
+    const skel = document.getElementById('skel' + i);
+    // Fallback to a generic AI image
+    if (img) {
+        img.src = 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=80';
+        img.classList.replace('loading', 'loaded');
+    }
+    if (skel) skel.style.display = 'none';
+}
+
+// Show skeletons immediately for images not yet loaded
+document.querySelectorAll('.img-card img.loading').forEach((img, idx) => {
+    const skel = document.getElementById('skel' + (idx + 1));
+    if (skel) skel.style.display = 'block';
+});
+
+// ── AI TUTOR ──
+async function askAI() {
+    const q = document.getElementById('aiQ').value.trim();
+    if (!q) return;
+    const topicName = "{{ topic_name }}";
+    const resp = document.getElementById('aiResp');
+    resp.className = 'ai-resp show';
+    resp.innerHTML = '<span class="typing">✦ Thinking...</span>';
+    try {
+        const res = await fetch('/ai_explain', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic: topicName, question: q })
+        });
+        const data = await res.json();
+        resp.textContent = data.answer;
+    } catch (e) {
+        resp.textContent = 'Could not reach AI. Make sure GROQ_API_KEY is set.';
+    }
+}
+
+// ── QUIZ ──
+let answered = {};
+let score = 0;
+const totalQ = document.querySelectorAll('.qcard').length;
+
+function pick(btn) {
+    const qi = btn.getAttribute('data-qi');
+    if (answered[qi]) return;
+    answered[qi] = true;
+
+    const card    = document.getElementById('qc' + qi);
+    const correct = card.getAttribute('data-answer');
+    const selected = btn.getAttribute('data-val');
+    const fb      = document.getElementById('fb' + qi);
+
+    card.querySelectorAll('.opt').forEach(b => b.disabled = true);
+
+    if (selected === correct) {
+        btn.classList.add('right');
+        card.classList.add('correct');
+        fb.textContent = '✅ Correct!';
+        fb.className = 'q-fb show c';
+        score++;
+    } else {
+        btn.classList.add('wrong-pick');
+        card.classList.add('wrong');
+        fb.textContent = '❌ Wrong! Correct: ' + correct;
+        fb.className = 'q-fb show w';
+        card.querySelectorAll('.opt').forEach(b => {
+            if (b.getAttribute('data-val') === correct) b.classList.add('reveal');
+        });
+    }
+
+    if (Object.keys(answered).length === totalQ) setTimeout(showScore, 700);
+}
+
+function showScore() {
+    const box  = document.getElementById('scoreBox');
+    const big  = document.getElementById('scoreBig');
+    const msg  = document.getElementById('scoreMsg');
+    const fill = document.getElementById('progFill');
+
+    box.classList.add('show');
+    big.textContent = score + '/' + totalQ;
+
+    const pct = Math.round((score / totalQ) * 100);
+    fill.style.width = pct + '%';
+
+    if (pct === 100)      msg.textContent = '🏆 Perfect score!';
+    else if (pct >= 60)   msg.textContent = '👍 Good job! Keep it up.';
+    else                  msg.textContent = '📚 Keep studying, you got this!';
+}
+
+function retryQuiz() {
+    answered = {}; score = 0;
+    document.querySelectorAll('.qcard').forEach(card => {
+        card.className = 'qcard';
+        card.querySelectorAll('.opt').forEach(b => { b.disabled = false; b.className = 'opt'; });
+        const qi = card.id.replace('qc', '');
+        const fb = document.getElementById('fb' + qi);
+        fb.className = 'q-fb'; fb.textContent = '';
+    });
+    document.getElementById('scoreBox').classList.remove('show');
+    document.getElementById('progFill').style.width = '0%';
+}
+</script>
+</body>
+</html>
